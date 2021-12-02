@@ -12,10 +12,16 @@ struct ContentView: View {
     // MARK: Stored properties
     // The ccurrent guess of the user
     @State var currentGuess: Double = 50
-    @State var value: Double = 50
+    
+    // The target that we are trying to guess
+    // Will produce an integer in the range 1 to 100, inclusive
+    @State var target = Int.random(in: 1...100)
+    
+    @State var feedback = ""
+    
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(spacing: 30) {
                 Slider(value: $currentGuess,
                        in: 0...100,
                        step: 1,
@@ -29,17 +35,26 @@ struct ContentView: View {
                     Text("100")
                 })
                 Text("\(String(format: "%.0f", currentGuess))")
+                    .font(.title)
+                    .bold()
+                Text("The super secret value is \(target)")
                 Button(action: {
-                    if(value == currentGuess) {
-                        value = Double(Int.random(in: 1..<100))
-                        print("You have guessed number!")
+                    
+                    //Make the user's guess into an integer
+                    let currentGuessAsInteger = Int(currentGuess)
+                    
+                    //Compare the user's current guess to the target
+                    
+                    if target == currentGuessAsInteger {
+                        target = Int.random(in: 1...100)
+                        feedback = "You got it!"
                     }
                     else {
-                        if(value > currentGuess) {
-                            print("Higher")
+                        if target > currentGuessAsInteger {
+                            feedback = "Guess higher next time!"
                         }
                         else {
-                            print("Lower")
+                            feedback = "Guess lower next time"
                         }
                     }
                     print("Button was pressed")
@@ -47,6 +62,7 @@ struct ContentView: View {
                     Text("Submit Guess")
                 })
                     .buttonStyle(.bordered)
+                Text(feedback)
             }
         }
         .padding()
